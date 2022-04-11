@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:10
+    hostname: postgres
+    volumes:
+      - ./postgres-init.sh:/docker-entrypoint-initdb.d/postgres-init.sh
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: db_user
+      POSTGRES_PASSWORD: db_password
+
+  test:
+    build: ./
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      DB_USERNAME: db_user
+      DB_PASSWORD: db_password
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db
+  
+networks:
+  default:
+    name: test
